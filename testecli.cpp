@@ -13,7 +13,7 @@
 
 #define PORTA_CLI 2345
 #define PORTA_SRV 2023
-#define STR_IPSERVIDOR "127.0.0.1"
+#define STR_IPSERVIDOR "143.54.6.12"
 //#define STR_IPSERVIDOR "192.168.0.146"
 
 int main(int argc, char* argv[])
@@ -28,6 +28,7 @@ int main(int argc, char* argv[])
     return(0);
   }
 
+/*
   // seta informacoes IP/Porta locais
   s_cli.sin_family = AF_INET;
   s_cli.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -40,11 +41,13 @@ int main(int argc, char* argv[])
     close(s);
     return(0);
   }
-
+*/
   // seta informacoes IP/Porta do servidor remoto
   s_serv.sin_family = AF_INET;
   s_serv.sin_addr.s_addr = inet_addr(STR_IPSERVIDOR);
-  s_serv.sin_port = htons(PORTA_SRV);
+
+  int port = atoi(argv[1]);
+  s_serv.sin_port = htons(port);
 
   // connecta socket aberto no cliente com o servidor
   if(connect(s, (struct sockaddr*)&s_serv, sizeof(s_serv)) != 0)
@@ -74,15 +77,10 @@ int main(int argc, char* argv[])
   time_t initial_time, final_time;
   time(&initial_time);
 
+  int t = 0;
   while(1)
   {
-    //printf("$ ");
-
-    // for(i=0; (i<80) &&  (ch = getchar()) != '\n'; i++ )
-    //   str[i] = (char)ch;
     str[0] = 'a';
-
-    //strcpy(str, "mensagem\0");
 
     if ((send(s, (const char *)&str, sizeof(str),0)) < 0)
     {
@@ -94,10 +92,12 @@ int main(int argc, char* argv[])
     if(strcmp((const char *)&str, "q")==0)
       break;
 
+    packages++;
+    time(&final_time);
     if (difftime(final_time, initial_time) == 1.0){
-    // após 1 segundo
-      printf("%d\n", packages);
+      printf("%d %d\n", packages, t);
       time(&initial_time);
+      t++;
       packages=0;
     }
      //usleep(100000);
