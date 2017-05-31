@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 #define _WIN32 0 // 1 ou zero dependendo do SO utilizado
 
 #include <sys/types.h>
@@ -31,9 +32,13 @@ int main(int argc, char* argv[])
 	  TrataErro(s, ABRESOCK);
 
   // Define dom�nio, IP e porta a receber dados
+  // char host[128];
+  // strcpy(host, argv[1]);
+  int port1 = atoi(argv[1]);
+
   addr_serv.sin_family = AF_INET;
   addr_serv.sin_addr.s_addr = htonl(INADDR_ANY); // recebe de qualquer IP
-  addr_serv.sin_port = htons(PORTA_SRV);
+  addr_serv.sin_port = htons(port1);
 
   // Associa socket com estrutura addr_serv
   if ((bind(s, (struct sockaddr *)&addr_serv, sizeof(addr_serv))) != 0)
@@ -49,13 +54,13 @@ int main(int argc, char* argv[])
 
   while(1)
   {
+
     if ((recv(s_cli, recvbuf, MAX_PACKET, 0)) < 0)
     {
       close(s_cli);
 	    TrataErro(s, RECEIVE);
     }
 
-    // mostra na tela
     if(strcmp((const char *)&recvbuf, "q")==0)
       break;
     else

@@ -70,13 +70,17 @@ int main(int argc, char* argv[])
   char ch;
   int i;
 
+  int packages = 0;
+  time_t initial_time, final_time;
+  time(&initial_time);
+
   while(1)
   {
-    printf("$ ");
+    //printf("$ ");
 
-    for(i=0; (i<80) &&  (ch = getchar()) != '\n'; i++ )
-      str[i] = (char)ch;
-    str[i] = '\0';
+    // for(i=0; (i<80) &&  (ch = getchar()) != '\n'; i++ )
+    //   str[i] = (char)ch;
+    str[0] = 'a';
 
     //strcpy(str, "mensagem\0");
 
@@ -90,6 +94,12 @@ int main(int argc, char* argv[])
     if(strcmp((const char *)&str, "q")==0)
       break;
 
+    if (difftime(final_time, initial_time) == 1.0){
+    // após 1 segundo
+      printf("%d\n", packages);
+      time(&initial_time);
+      packages=0;
+    }
      //usleep(100000);
   }
 
