@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
   SOCKET s;
   struct sockaddr_in  s_cli, s_serv;
 
-  // abre socket TCP
+  /* Abre socket TCP, indicado por SOCK_STREAM */
   if ((s = socket(AF_INET, SOCK_STREAM, 0))==INVALID_SOCKET)
   {
     printf("Erro iniciando socket\n");
@@ -42,18 +42,18 @@ int main(int argc, char* argv[])
     return(0);
   }
 */
-  // seta informacoes IP/Porta do servidor remoto
+  /* Seta informacoes IP/Porta do servidor remoto */
   s_serv.sin_family = AF_INET;
   s_serv.sin_addr.s_addr = inet_addr(STR_IPSERVIDOR);
 
+  /* Recebe a porta por parâmetro do usuário. */
   int port = atoi(argv[1]);
   s_serv.sin_port = htons(port);
 
-  // connecta socket aberto no cliente com o servidor
+  // Conecta socket aberto no cliente com o servidor
   if(connect(s, (struct sockaddr*)&s_serv, sizeof(s_serv)) != 0)
   {
-    //printf("erro na conexao - %d\n", WSAGetLastError());
-    printf("erro na conexao");
+    printf("Erro na conexao");
     close(s);
     exit(1);
   }
@@ -68,11 +68,12 @@ int main(int argc, char* argv[])
   }
 #endif
 
-  // recebe do teclado e envia ao servidor
+  /* Envia pacotes de 1250 bytes para o servidor */
   char str[1250];
   char ch;
   int i;
 
+  /* Variáveis utilizadas para medir o tempo de envio de cada pacote. */
   int packages = 0;
   time_t initial_time, final_time;
   time(&initial_time);
@@ -84,14 +85,14 @@ int main(int argc, char* argv[])
 
     if ((send(s, (const char *)&str, sizeof(str),0)) < 0)
     {
-      //printf("erro na transmiss�o - %d\n", WSAGetLastError());
-      printf("erro na transmissao\n");
+      printf("Erro na transmissão\n");
       close(s);
       return 0;
     }
     if(strcmp((const char *)&str, "q")==0)
       break;
 
+    /* Contabiliza o número de pacotes enviado por segundo. Ainda, ao passar de cada segundo, zera este valor.*/
     packages++;
     time(&final_time);
     if (difftime(final_time, initial_time) == 1.0){
@@ -100,11 +101,10 @@ int main(int argc, char* argv[])
       t++;
       packages=0;
     }
-     //usleep(100000);
   }
 
-  // fecha socket e termina programa
-  printf("Fim da conexao\n");
+  // Fecha socket e termina programa
+  printf("Fim da conexão\n");
   close(s);
   return 0;
 }
