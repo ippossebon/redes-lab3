@@ -42,9 +42,13 @@ int main(int argc, char* argv[])
     return(0);
   }
 */
+
+  char IP_SRV[256];
+  strcpy(IP_SRV,argv[1]);
+
   /* Seta informacoes IP/Porta do servidor remoto */
   s_serv.sin_family = AF_INET;
-  s_serv.sin_addr.s_addr = inet_addr(STR_IPSERVIDOR);
+  s_serv.sin_addr.s_addr = inet_addr(IP_SRV);
 
   /* Recebe a porta por parâmetro do usuário. */
   int port = atoi(argv[1]);
